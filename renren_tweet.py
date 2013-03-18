@@ -7,6 +7,7 @@ import sgmllib
 import sys, urllib, urllib2,cookielib
 import datetime,time
 class Renren_tweet(sgmllib.SGMLParser):
+	"""renren tweet console"""
   def __init__ (self,username,password):
 		self.username = username
 		self.password = password
@@ -24,14 +25,13 @@ class Renren_tweet(sgmllib.SGMLParser):
 			print e
 	def login (self):
 		print "login...."
-		url1 = 'http://www.renren.com/PLogin.do'
+		url_login = 'http://www.renren.com/PLogin.do'
 		params ={'email':self.username,'password':self.password,'domain':self.domain,'homeUrl':self.homeUrl}
-		req = urllib2.Request(url1,urllib.urlencode(params))
-		if self.opener.open(req).geturl()=='http://www.renren.com/223538568':
+		req = urllib2.Request(url_login,urllib.urlencode(params))
+		if self.opener.open(req).geturl()==self.homeUrl:
 			print 'Successfully login'
 
 		self.infocontent = urllib2.urlopen(req).read()
-		#self.infocontent = self.opener.open(req).readlines()
 		idPosition=self.infocontent.index("'id':'")
 		self.id=self.infocontent[idPosition+6:idPosition+15]
 		tokPosition=self.infocontent.index("get_check:'")
@@ -40,10 +40,10 @@ class Renren_tweet(sgmllib.SGMLParser):
 		self.rtk=self.infocontent[rtkPosition+13:rtkPosition+21]
 	
 	def postTweet (self,content):
-		url2 = "http://shell.renren.com/"+self.id+'/status'
+		url_post = "http://shell.renren.com/"+self.id+'/status'
 		params = {'content':content,'hostid':self.id,'requestToken':self.tok,'_rtk':self.rtk,'channel':'renren'}
-		req2 = urllib2.Request(url2,urllib.urlencode(params))
-		self.tweet = urllib2.urlopen(req2).read()
+		req_post = urllib2.Request(url_post,urllib.urlencode(params))
+		self.tweet = urllib2.urlopen(req_post).read()
 		print self.tweet
 
 username ='xxxx@xxx.com'
